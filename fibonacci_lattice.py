@@ -11,6 +11,8 @@ class FibonacciLattice(nx.Graph):
     """
     def __init__(self, n, k):
         super().__init__()
+
+        # TODO Come up with better names for these. Order/scale?
         self.n = n
         self.k = k
 
@@ -108,11 +110,11 @@ class FibonacciLattice(nx.Graph):
 
     def solve(self):
         """Attempt to find a solution for the diamond and crossing relations.
+
+        Until the lattice is solved or there is a deadlock, repeat:
+        Step 1a: Check components for solubility (cis-color propagation)
+        Step 1b: Check vertices for soluble crossing relations (trans-color propagation)
         """
-        # Step 0: Generate components and order them by least vertex.
-        # Step 1: Fill in all the 1's and 2's and take them out of the order.
-        # Step 2: Repeatedly pass over the structure, propagating values as
-        #         necessary.
         components = []
         for color in range(1, self.n):
             components[color] = set()
