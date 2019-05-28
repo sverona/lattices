@@ -15,7 +15,8 @@ class FibonacciLattice(nx.Graph):
         self.k = k
 
         self.add_nodes_from(self.tableaux())
-        # TODO This edge generation process can be sped up by turning it around.
+        # TODO This edge generation process can be sped up by turning it around
+        # that is, only check the possible adjacent labels and see if they're valid
         for node1 in self.nodes():
             for node2 in self.nodes():
                 if self.adjacent(node1, node2):
@@ -59,7 +60,7 @@ class FibonacciLattice(nx.Graph):
         return differences == 1
 
     def is_good(self, tableau):
-        """Check if _tableau_ is a valid {{{}}}
+        """Check if _tableau_ is a valid vertex label for this lattice.
         """
         for idx in range(1, len(tableau)):
             if tableau[idx] - tableau[idx - 1] == 1:
@@ -112,4 +113,24 @@ class FibonacciLattice(nx.Graph):
         # Step 1: Fill in all the 1's and 2's and take them out of the order.
         # Step 2: Repeatedly pass over the structure, propagating values as
         #         necessary.
+        components = []
+        for color in range(1, self.n):
+            components[color] = set()
+            for node in self.nodes():
+                if not any(node in component for component in components):
+                    components[color].add(self.component(node, color))
 
+    @staticmethod
+    def solve_component_lm3(component):
+        """Return a dictionary {edge: weight} satisfying the diamond and/or
+        crossing relations for this component, or None if there is no such
+        solution.
+
+        These solutions are limited to those components appearing in Fibonacci
+        lattices of order m,3. I have not yet proven that this list is
+        exhaustive, but I have no reason to believe that any more components
+        appear.
+
+        This should really be refactored off to a subclass, but I'm going to
+        wait until that's actually necessary.
+        """
