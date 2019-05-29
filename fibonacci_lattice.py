@@ -8,13 +8,14 @@ import networkx as nx
 
 class FibonacciLattice(nx.Graph):
     """Fibonacci lattice class.
+
+    A Fibonacci lattice is a subset of [1, ..., k]
     """
-    def __init__(self, n, k):
+    def __init__(self, scale, order):
         super().__init__()
 
-        # TODO Come up with better names for these. Order/scale?
-        self.n = n
-        self.k = k
+        self.scale = scale
+        self.order = order
 
         self.add_nodes_from(self.tableaux())
         # TODO This edge generation process can be sped up by turning it around
@@ -42,11 +43,11 @@ class FibonacciLattice(nx.Graph):
         # n-1 1   n-1 1
         # The color is given by the element in column lower_label // n
         # and row lower_label % n.
-        col = lower_label // self.n
-        row = lower_label - self.n * col
+        col = lower_label // self.scale
+        row = lower_label - self.scale * col
         if col % 2 == 0:
             return row
-        return self.n - row
+        return self.scale - row
 
     @staticmethod
     def adjacent(node1, node2):
@@ -69,7 +70,7 @@ class FibonacciLattice(nx.Graph):
                 return False
 
         for idx, coord in enumerate(tableau):
-            if not idx * self.n < coord <= (1 + idx) * self.n:
+            if not idx * self.scale < coord <= (1 + idx) * self.scale:
                 return False
 
         return True
@@ -101,8 +102,8 @@ class FibonacciLattice(nx.Graph):
     def tableaux(self):
         """Return all valid tableaux for this lattice.
         """
-        min_tab = list(range(1, self.n * self.k, self.n))
-        offsets = product(range(self.n), repeat=self.k)
+        min_tab = list(range(1, self.scale * self.order, self.scale))
+        offsets = product(range(self.scale), repeat=self.order)
         for offset in offsets:
             tab = tuple(map(operator.add, min_tab, offset))
             if self.is_good(tab):
@@ -116,7 +117,7 @@ class FibonacciLattice(nx.Graph):
         Step 1b: Check vertices for soluble crossing relations (trans-color propagation)
         """
         components = []
-        for color in range(1, self.n):
+        for color in range(1, self.scale):
             components[color] = set()
             for node in self.nodes():
                 if not any(node in component for component in components):
@@ -129,10 +130,19 @@ class FibonacciLattice(nx.Graph):
         solution.
 
         These solutions are limited to those components appearing in Fibonacci
-        lattices of order m,3. I have not yet proven that this list is
+        lattices of order 3. I have not yet proven that this list is
         exhaustive, but I have no reason to believe that any more components
         appear.
+
+        Components are identified by their spectrum. I suspect but have not
+        proven that no isospectral components appear.
 
         This should really be refactored off to a subclass, but I'm going to
         wait until that's actually necessary.
         """
+        # A: (a, b, a, b).
+
+        # A2: g = (3 - a)/(1 + a),
+        # (a, 3-a, 1+a, ag), (ag, 1+g, 3-g, g).
+        # a != -1.
+         
