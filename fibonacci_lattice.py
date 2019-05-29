@@ -24,16 +24,16 @@ class FibonacciLattice(nx.Graph):
                 plus1 = list(node)
                 plus1[idx] += 1
                 plus1 = tuple(plus1)
-                if self.is_good(plus1):
-                    self.add_edge(node, plus1, color=self.color(node, plus1))
+                if self.is_valid_label(plus1):
+                    self.add_edge(node, plus1, color=self.edge_color(node, plus1))
 
                 minus1 = list(node)
                 minus1[idx] -= 1
                 minus1 = tuple(minus1)
-                if self.is_good(minus1):
-                    self.add_edge(node, minus1, color=self.color(node, minus1))
+                if self.is_valid_label(minus1):
+                    self.add_edge(node, minus1, color=self.edge_color(node, minus1))
 
-    def color(self, node1, node2):
+    def edge_color(self, node1, node2):
         """Return the color the edge between _node1_ and _node2_
         should have, or None if they are nonadjacent.
         """
@@ -69,8 +69,8 @@ class FibonacciLattice(nx.Graph):
 
         return differences == 1
 
-    def is_good(self, tableau):
-        """Check if _tableau_ is a valid vertex label for this lattice.
+    def is_valid_label(self, tableau):
+        """Check if _tableau_ is a valid node label for this lattice.
         """
         for idx in range(1, len(tableau)):
             if tableau[idx] - tableau[idx - 1] == 1:
@@ -113,7 +113,7 @@ class FibonacciLattice(nx.Graph):
         offsets = product(range(self.scale), repeat=self.order)
         for offset in offsets:
             tab = tuple(map(operator.add, min_tab, offset))
-            if self.is_good(tab):
+            if self.is_valid_label(tab):
                 yield tab
 
     def solve(self):
@@ -121,10 +121,10 @@ class FibonacciLattice(nx.Graph):
 
         Until the lattice is solved or there is a deadlock, repeatedly:
         Cis-propagate: Check components for solubility
-        Trans-propagate: Check vertices for soluble crossing relations
+        Trans-propagate: Check nodes for soluble crossing relations
 
-        This should suffice for low orders. We may also need to check for soluble
-        trans-color diamonds.
+        This should suffice for low orders. We may also need to check for
+        soluble trans-color diamonds.
         """
         components = []
         for color in range(1, self.scale):
