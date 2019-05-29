@@ -24,10 +24,10 @@ class FibonacciLatticeTestCase(unittest.TestCase):
         self.assertEqual(len(self.lattice.edges()), 38)
 
     def test_is_adjacent(self):
-        self.assertTrue(self.is_adjacent((1, 4, 7), (1, 4, 8)))
-        self.assertTrue(self.is_adjacent((1, 4, 7), (1, 5, 7)))
+        self.assertTrue(self.lattice.is_adjacent((1, 4, 7), (1, 4, 8)))
+        self.assertTrue(self.lattice.is_adjacent((1, 4, 7), (1, 5, 7)))
 
-        self.assertFalse(self.is_adjacent((1, 4, 7), (1, 5, 8)))
+        self.assertFalse(self.lattice.is_adjacent((1, 4, 7), (1, 5, 8)))
 
     def test_edge_color(self):
         self.assertEqual(self.lattice.edge_color((1, 4, 7), (1, 4, 8)), 1)
