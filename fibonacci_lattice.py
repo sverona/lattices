@@ -37,7 +37,7 @@ class FibonacciLattice(nx.Graph):
         """Return the color the edge between _node1_ and _node2_
         should have, or None if they are nonadjacent.
         """
-        if not self.adjacent(node1, node2):
+        if not self.is_adjacent(node1, node2):
             return None
 
         diffs = [(comp1, comp2) for comp1, comp2 in zip(node1, node2) if comp1 != comp2][0]
@@ -57,7 +57,7 @@ class FibonacciLattice(nx.Graph):
         return self.scale - row
 
     @staticmethod
-    def adjacent(node1, node2):
+    def is_adjacent(node1, node2):
         """Check if _node1_ and _node2_ are adjacent.
         """
         differences = 0

@@ -9,16 +9,31 @@ class FibonacciLatticeTestCase(unittest.TestCase):
         self.lattice = None
 
     def test_valid_label(self):
-        self.assertTrue(self.lattice.is_valid([1, 4, 7]))
-        self.assertTrue(self.lattice.is_valid([2, 4, 7]))
-        self.assertTrue(self.lattice.is_valid([2, 4, 8]))
-        self.assertTrue(self.lattice.is_valid([3, 5, 8]))
+        self.assertTrue(self.lattice.is_valid_label((1, 4, 7)))
+        self.assertTrue(self.lattice.is_valid_label((2, 4, 7)))
+        self.assertTrue(self.lattice.is_valid_label((2, 4, 8)))
+        self.assertTrue(self.lattice.is_valid_label((3, 5, 8)))
 
-        self.assertFalse(self.lattice.is_valid([3, 4, 8]))
-        self.assertFalse(self.lattice.is_valid([3, 6, 7]))
-        self.assertFalse(self.lattice.is_valid([3, 6, 10]))
-        self.assertFalse(self.lattice.is_valid([-1, 4, 7]))
+        self.assertFalse(self.lattice.is_valid_label((3, 4, 8)))
+        self.assertFalse(self.lattice.is_valid_label((3, 6, 7)))
+        self.assertFalse(self.lattice.is_valid_label((3, 6, 10)))
+        self.assertFalse(self.lattice.is_valid_label((-1, 4, 7)))
 
     def test_size(self):
         self.assertEqual(len(self.lattice.nodes()), 21)
         self.assertEqual(len(self.lattice.edges()), 38)
+
+    def test_is_adjacent(self):
+        self.assertTrue(self.is_adjacent((1, 4, 7), (1, 4, 8)))
+        self.assertTrue(self.is_adjacent((1, 4, 7), (1, 5, 7)))
+
+        self.assertFalse(self.is_adjacent((1, 4, 7), (1, 5, 8)))
+
+    def test_edge_color(self):
+        self.assertEqual(self.lattice.edge_color((1, 4, 7), (1, 4, 8)), 1)
+        self.assertEqual(self.lattice.edge_color((1, 4, 7), (1, 5, 7)), 2)
+
+        self.assertIsNone(self.lattice.edge_color((1, 4, 7), (1, 5, 8)))
+
+if __name__ == "__main__":
+    unittest.main()
