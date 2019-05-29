@@ -1,8 +1,6 @@
 """Implements diamond/crossing relations for Fibonacci lattices.
 """
 from itertools import product
-from functools import lru_cache
-import operator
 
 import networkx as nx
 
@@ -112,7 +110,7 @@ class FibonacciLattice(nx.Graph):
         min_tab = list(range(1, self.scale * self.order, self.scale))
         offsets = product(range(self.scale), repeat=self.order)
         for offset in offsets:
-            tab = tuple(map(operator.add, min_tab, offset))
+            tab = tuple(map(lambda c, o: c + o, min_tab, offset))
             if self.is_valid_label(tab):
                 yield tab
 
