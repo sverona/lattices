@@ -8,8 +8,9 @@ import networkx as nx
 
 class FibonacciLattice(nx.Graph):
     """The scale-m, order-n Fibonacci lattice, or FL_{m,n}, is the set of all
-    semistandard/column-strict Young tableaux of {{{FINISH DEFINING THIS}}}
+    semistandard/column-strict Young tableaux of
     """
+    # TODO finish the above definition
     def __init__(self, scale, order):
         super().__init__()
 
@@ -17,13 +18,20 @@ class FibonacciLattice(nx.Graph):
         self.order = order
 
         self.add_nodes_from(self.tableaux())
-        # TODO This edge generation process can be sped up by turning it around
-        # that is, only check the possible adjacent labels and see if they're valid
-        for node1 in self.nodes():
-            for node2 in self.nodes():
-                if self.adjacent(node1, node2):
-                    self.add_edge(node1, node2,
-                                  color=self.color(node1, node2))
+        for node in self.nodes():
+            # Add/subtract 1 to each label item and check for validity
+            for idx, _ in enumerate(node):
+                plus1 = list(node)
+                plus1[idx] += 1
+                plus1 = tuple(plus1)
+                if self.is_good(plus1):
+                    self.add_edge(node, plus1, color=self.color(node, plus1))
+
+                minus1 = list(node)
+                minus1[idx] -= 1
+                minus1 = tuple(minus1)
+                if self.is_good(minus1):
+                    self.add_edge(node, minus1, color=self.color(node, minus1))
 
     def color(self, node1, node2):
         """Return the color the edge between _node1_ and _node2_
