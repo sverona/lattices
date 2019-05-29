@@ -8,7 +8,7 @@ class FibonacciLatticeTestCase(unittest.TestCase):
     def tearDown(self):
         self.lattice = None
 
-    def test_valid_label(self):
+    def test_is_valid_label(self):
         self.assertTrue(self.lattice.is_valid_label((1, 4, 7)))
         self.assertTrue(self.lattice.is_valid_label((2, 4, 7)))
         self.assertTrue(self.lattice.is_valid_label((2, 4, 8)))
