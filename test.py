@@ -35,5 +35,10 @@ class FibonacciLatticeTestCase(unittest.TestCase):
 
         self.assertIsNone(self.lattice.edge_color((1, 4, 7), (1, 5, 8)))
 
+    def test_vertex_weight(self):
+        self.assertEqual(self.lattice.vertex_weight((1, 4, 7)), (2, 1))
+        self.assertEqual(self.lattice.vertex_weight((1, 4, 8)), (0, 2))
+        self.assertEqual(self.lattice.vertex_weight((1, 5, 7)), (3, -1))
+
 if __name__ == "__main__":
     unittest.main()

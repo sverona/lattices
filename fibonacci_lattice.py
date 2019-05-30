@@ -16,6 +16,8 @@ class FibonacciLattice(nx.Graph):
         self.order = order
 
         self.add_nodes_from(self.tableaux())
+        
+        # Generate edges.
         for node in self.nodes():
             # Add/subtract 1 to each label item and check for validity
             for idx, _ in enumerate(node):
@@ -70,6 +72,7 @@ class FibonacciLattice(nx.Graph):
     def is_valid_label(self, tableau):
         """Check if _tableau_ is a valid node label for this lattice.
         """
+
         for idx in range(1, len(tableau)):
             if tableau[idx] - tableau[idx - 1] == 1:
                 return False
@@ -88,7 +91,7 @@ class FibonacciLattice(nx.Graph):
         """Return the _color_-component in which _node_ lies.
         """
         component = set()
-        frontier = set(node)
+        frontier = set([node])
 
         while frontier:
             next_frontier = set()
@@ -103,6 +106,21 @@ class FibonacciLattice(nx.Graph):
 
         return frozenset(component)
 
+    def vertex_weight(self, node):
+        """Return the weight of _node_ in this lattice.
+        """
+        weight = []
+        for color in range(1, self.scale):
+            component = self.component(node, color)
+            ranks = [sum(node) for node in component]
+            top_rank, bottom_rank = min(ranks), max(ranks)
+            
+            rank = top_rank - sum(node)
+            depth = sum(node) - bottom_rank
+            this_weight = rank - depth
+            weight.append(this_weight)
+
+        return tuple(weight)
 
     def tableaux(self):
         """Return all valid tableaux for this lattice.
@@ -153,4 +171,3 @@ class FibonacciLattice(nx.Graph):
         # A2: g = (3 - a)/(1 + a),
         # (a, 3-a, 1+a, ag), (ag, 1+g, 3-g, g).
         # a != -1.
-         
